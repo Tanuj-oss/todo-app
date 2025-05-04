@@ -82,8 +82,9 @@ function App() {
 
       <ul className="task-list">
         {filteredTasks.map(task => (
-          <li key={task.id}>
+          <li style={{ cursor: 'pointer' }}  key={task.id}>
             <input
+              style={{ cursor: 'pointer' }} 
               type="checkbox"
               checked={task.completed}
               onChange={() => toggleComplete(task.id)}
