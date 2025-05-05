@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
+  // Existing state for tasks, text, description, filter, darkMode
   const [tasks, setTasks] = useState(() => {
     const stored = localStorage.getItem("tasks");
     return stored ? JSON.parse(stored) : [];
@@ -12,6 +13,10 @@ function App() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
+  // NEW: state for new task's priority (default "Medium")
+  const [taskPriority, setTaskPriority] = useState("Medium");
+  // NEW: state for filtering by priority (default "all")
+  const [priorityFilter, setPriorityFilter] = useState("all");
 
   // Save tasks to localStorage whenever tasks change
   useEffect(() => {
@@ -31,10 +36,14 @@ function App() {
       text: taskText,
       description: taskDesc,
       completed: false,
+      // NEW: include the selected priority in the task
+      priority: taskPriority
     };
     setTasks([...tasks, newTask]);
     setTaskText("");
     setTaskDesc("");
+    // Reset priority if desired (optional, keep default Medium or last selection)
+    setTaskPriority("Medium");
   };
 
   const toggleComplete = (id) => {
@@ -47,11 +56,19 @@ function App() {
     setTasks(tasks.filter(task => !task.completed));
   };
 
-  const filteredTasks = tasks.filter(task => {
-    if (filter === "active") return !task.completed;
-    if (filter === "completed") return task.completed;
-    return true;
-  });
+  // Combine filters: by status and by priority
+  const filteredTasks = tasks
+    .filter(task => {
+      if (filter === "active") return !task.completed;
+      if (filter === "completed") return task.completed;
+      return true;
+    })
+    .filter(task => {
+      if (priorityFilter === "high") return task.priority === "High";
+      if (priorityFilter === "medium") return task.priority === "Medium";
+      if (priorityFilter === "low") return task.priority === "Low";
+      return true; // "all"
+    });
 
   return (
     <div className={`app ${darkMode ? "dark-theme" : ""}`}>
@@ -77,21 +94,38 @@ function App() {
           value={taskDesc}
           onChange={(e) => setTaskDesc(e.target.value)}
         />
+        {/* NEW: Priority dropdown for selecting High/Medium/Low */}
+        <select
+          value={taskPriority}
+          onChange={(e) => setTaskPriority(e.target.value)}
+        >
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
         <button onClick={addTask}>Add</button>
       </div>
 
       <ul className="task-list">
         {filteredTasks.map(task => (
-          <li style={{ cursor: 'pointer' }}  key={task.id}>
+          <li key={task.id} style={{ cursor: 'pointer' }}>
             <input
-              style={{ cursor: 'pointer' }} 
               type="checkbox"
               checked={task.completed}
               onChange={() => toggleComplete(task.id)}
             />
             <div className="task-info">
-              <span className={task.completed ? "completed" : ""}>{task.text}</span>
-              {task.description && <p className="description">{task.description}</p>}
+              <span className={task.completed ? "completed" : ""}>
+                {task.text}
+              </span>
+              {/* Show description if present */}
+              {task.description && (
+                <p className="description">{task.description}</p>
+              )}
+              {/* NEW: Show the priority label, styled by its class */}
+              <span className={"priority-" + task.priority.toLowerCase()}>
+                {task.priority}
+              </span>
             </div>
           </li>
         ))}
@@ -116,6 +150,34 @@ function App() {
           onClick={() => setFilter("completed")}
         >
           Completed
+        </button>
+      </div>
+      {/* NEW: Priority filter buttons */}
+      <div className="priority-filters">
+        <span>Priority:</span>
+        <button
+          className={priorityFilter === "all" ? "active-filter" : ""}
+          onClick={() => setPriorityFilter("all")}
+        >
+          All
+        </button>
+        <button
+          className={priorityFilter === "high" ? "active-filter" : ""}
+          onClick={() => setPriorityFilter("high")}
+        >
+          High
+        </button>
+        <button
+          className={priorityFilter === "medium" ? "active-filter" : ""}
+          onClick={() => setPriorityFilter("medium")}
+        >
+          Medium
+        </button>
+        <button
+          className={priorityFilter === "low" ? "active-filter" : ""}
+          onClick={() => setPriorityFilter("low")}
+        >
+          Low
         </button>
       </div>
     </div>

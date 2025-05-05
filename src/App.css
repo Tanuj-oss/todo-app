@@ -32,14 +32,16 @@ h1 {
   gap: 10px;
 }
 
-.input-container input[type="text"] {
+.input-container input[type="text"],
+.input-container select {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #f9f9f9;
 }
 
-.dark-theme .input-container input[type="text"] {
+.dark-theme .input-container input[type="text"],
+.dark-theme .input-container select {
   background: #2b2b3b;
   color: #fff;
   border: 1px solid #444;
@@ -119,3 +121,56 @@ h1 {
   background-color: #5c6bc0;
 }
 
+/* NEW: Priority filter button row */
+.priority-filters {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.priority-filters span {
+  font-weight: bold;
+}
+
+.priority-filters button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.dark-theme .priority-filters button {
+  background-color: #3a3a4d;
+  color: #f1f1f1;
+}
+
+.priority-filters .active-filter {
+  background-color: #c5cae9;
+}
+
+.dark-theme .priority-filters .active-filter {
+  background-color: #5c6bc0;
+}
+
+/* NEW: Priority level styling */
+.priority-high {
+  /* High priority: red */
+  color: #e53935;
+  font-weight: bold;
+}
+
+.priority-medium {
+  /* Medium priority: orange */
+  color: #fb8c00;
+  font-weight: bold;
+}
+
+.priority-low {
+  /* Low priority: green */
+  color: #43a047;
+  font-weight: bold;
+}
+
+/* Dark theme adjustments if needed (text colors above are bright enough against dark background) */
