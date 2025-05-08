@@ -174,3 +174,94 @@ h1 {
 }
 
 /* Dark theme adjustments if needed (text colors above are bright enough against dark background) */
+/* Progress bar styling */
+.progress-container {
+  margin-bottom: 20px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  position: relative;
+  height: 20px;
+  overflow: hidden;
+}
+
+.dark-theme .progress-container {
+  background-color: #444;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease-in-out;
+}
+
+.progress-label {
+  position:   absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #000;
+  font-weight: bold;
+  line-height: 20px;
+}
+
+.dark-theme .progress-label {
+  color: #fff;
+}
+
+/* Progress bar styling */
+.progress-container {
+  margin-bottom: 20px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  position: relative;
+  height: 20px;
+  overflow: hidden;
+}
+
+.dark-theme .progress-container {
+  background-color: #444;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease-in-out;
+}
+
+.progress-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #000;
+  font-weight: bold;
+  line-height: 20px;
+}
+
+.dark-theme .progress-label {
+  color: #fff;
+}
+/* Delete button */
+.delete-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: #888; /* base icon color */
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
+}
+
+.dark-theme .delete-btn {
+  color: #aaa; /* base icon color in dark mode */
+}
+
+.dark-theme .delete-btn:hover {
+  transform: scale(1.2);
+}

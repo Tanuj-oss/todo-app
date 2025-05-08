@@ -2,28 +2,23 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
-  // Existing state for tasks, text, description, filter, darkMode
   const [tasks, setTasks] = useState(() => {
     const stored = localStorage.getItem("tasks");
     return stored ? JSON.parse(stored) : [];
   });
   const [taskText, setTaskText] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
+  const [taskPriority, setTaskPriority] = useState("Medium");
   const [filter, setFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
-  // NEW: state for new task's priority (default "Medium")
-  const [taskPriority, setTaskPriority] = useState("Medium");
-  // NEW: state for filtering by priority (default "all")
-  const [priorityFilter, setPriorityFilter] = useState("all");
 
-  // Save tasks to localStorage whenever tasks change
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  // Apply dark mode class to body
   useEffect(() => {
     document.body.className = darkMode ? "dark" : "";
     localStorage.setItem("darkMode", darkMode);
@@ -36,13 +31,11 @@ function App() {
       text: taskText,
       description: taskDesc,
       completed: false,
-      // NEW: include the selected priority in the task
-      priority: taskPriority
+      priority: taskPriority,
     };
     setTasks([...tasks, newTask]);
     setTaskText("");
     setTaskDesc("");
-    // Reset priority if desired (optional, keep default Medium or last selection)
     setTaskPriority("Medium");
   };
 
@@ -52,11 +45,14 @@ function App() {
     ));
   };
 
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
+
   const clearCompleted = () => {
     setTasks(tasks.filter(task => !task.completed));
   };
 
-  // Combine filters: by status and by priority
   const filteredTasks = tasks
     .filter(task => {
       if (filter === "active") return !task.completed;
@@ -67,8 +63,11 @@ function App() {
       if (priorityFilter === "high") return task.priority === "High";
       if (priorityFilter === "medium") return task.priority === "Medium";
       if (priorityFilter === "low") return task.priority === "Low";
-      return true; // "all"
+      return true;
     });
+
+  const completedCount = tasks.filter(t => t.completed).length;
+  const progressPercent = tasks.length ? (completedCount / tasks.length) * 100 : 0;
 
   return (
     <div className={`app ${darkMode ? "dark-theme" : ""}`}>
@@ -81,6 +80,14 @@ function App() {
           {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
         </span>
       </h1>
+
+      <div className="progress-container">
+        <div className="progress-bar" style={{ width: `${progressPercent}%` }} />
+        <span className="progress-label">
+          {Math.round(progressPercent)}% Completed
+        </span>
+      </div>
+
       <div className="input-container">
         <input
           type="text"
@@ -94,7 +101,6 @@ function App() {
           value={taskDesc}
           onChange={(e) => setTaskDesc(e.target.value)}
         />
-        {/* NEW: Priority dropdown for selecting High/Medium/Low */}
         <select
           value={taskPriority}
           onChange={(e) => setTaskPriority(e.target.value)}
@@ -108,7 +114,7 @@ function App() {
 
       <ul className="task-list">
         {filteredTasks.map(task => (
-          <li key={task.id} style={{ cursor: 'pointer' }}>
+          <li key={task.id}>
             <input
               type="checkbox"
               checked={task.completed}
@@ -118,15 +124,17 @@ function App() {
               <span className={task.completed ? "completed" : ""}>
                 {task.text}
               </span>
-              {/* Show description if present */}
               {task.description && (
                 <p className="description">{task.description}</p>
               )}
-              {/* NEW: Show the priority label, styled by its class */}
               <span className={"priority-" + task.priority.toLowerCase()}>
                 {task.priority}
               </span>
             </div>
+            {/* Delete button */}
+            <button className="delete-btn" onClick={() => deleteTask(task.id)}>
+              🗑️
+            </button>
           </li>
         ))}
       </ul>
@@ -152,7 +160,7 @@ function App() {
           Completed
         </button>
       </div>
-      {/* NEW: Priority filter buttons */}
+
       <div className="priority-filters">
         <span>Priority:</span>
         <button
